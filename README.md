@@ -3,26 +3,26 @@ Suricata eve.json visualization in DShield ELK SIEM
 
 My intention is to put as little burden on the honeypot as possible to stay within the limits of the AWS Free tier. Suricata is unable to run with those limited specs so I will be using the SIEM server to perform the processing.
 
-DShield Honeypot Sensor (Ubuntu 22.04.5 LTS) (AWS Free Instance)
-https://github.com/DShield-ISC/dshield
+DShield Honeypot Sensor (Ubuntu 22.04.5 LTS) (AWS Free Instance) \
+https://github.com/DShield-ISC/dshield \
 https://aws.amazon.com/free/free-tier-faqs/
 
-DShield-SIEM (Ubuntu 24.04.2 LTS) (Local Network)
+DShield-SIEM (Ubuntu 24.04.2 LTS) (Local Network) \
 https://github.com/bruneaug/DShield-SIEM
 
 Collect Packet Captures on Sensor
-I will be using Cisco Talos Daemonlogger in this demonstration. Any packet capture software will work.
-https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md
+I will be using Cisco Talos Daemonlogger in this demonstration. \
+Any packet capture software will work. \
+https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
 https://www.talosintelligence.com/daemon
 
 
 
 
 
-**Part 1: Install Suricata on SIEM Server**
-____________________________________________________________
+## **Part 1: Install Suricata on SIEM Server**
 
-Suricata Install (Ubuntu / Debian)
+Suricata Install (Ubuntu / Debian) \
 https://docs.suricata.io/en/latest/install.html (section 3.2.1)
 
 	sudo apt-get install software-properties-common
@@ -30,7 +30,7 @@ https://docs.suricata.io/en/latest/install.html (section 3.2.1)
 	sudo apt-get update
 	sudo apt-get install suricata (latest stable)
 
-Fetch the default ruleset (ET Open ruleset)
+Fetch the default ruleset (ET Open ruleset) \
 https://rules.emergingthreats.net/OPEN_download_instructions.html
 
 	sudo suricata-update 
@@ -60,8 +60,7 @@ under outputs: fast, stats, file
 
 
 
-**Part 2: Filebeat**
-________________________________________________________________
+## **Part 2: Filebeat**
 
 Filebeat will be our method of getting the Suricata output to visualize in Kibana. We will be using the Suricata module for filebeat to parse Suricata eve.json.
 
@@ -109,8 +108,7 @@ In /usr/share/filebeat to build Kibana dashboards
 
 
 
-**Part 3: Elasticsearch Suricata Integration**
-___________________________________________________________
+## **Part 3: Elasticsearch Suricata Integration**
 
 Log into Kibana: https://serverIP:5601
 
@@ -125,8 +123,7 @@ Add Suricata integration to Existing Fleet server
 
 
 
-**Part 4: Transferring Pcaps & Running Suricata**
-__________________________________________________________
+## **Part 4: Transferring Pcaps & Running Suricata**
 
 I have created a script that pulls the pcap from the honeypot using scp > appends ".pcap" to daemonlogger files > Runs suricata in offline mode against pcaps > then moves the eve.json file to /var/log/suricata for filebeat to process
 
