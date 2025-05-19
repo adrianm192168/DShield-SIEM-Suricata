@@ -19,7 +19,7 @@ https://www.talosintelligence.com/daemon
 
 
 
-Part 1: Install Suricata on SIEM Server
+**Part 1: Install Suricata on SIEM Server**
 ____________________________________________________________
 
 Suricata Install (Ubuntu / Debian)
@@ -60,7 +60,7 @@ under outputs: fast, stats, file
 
 
 
-Part 2: Filebeat 
+**Part 2: Filebeat **
 ________________________________________________________________
 
 Filebeat will be our method of getting the Suricata output to visualize in Kibana. We will be using the Suricata module for filebeat to parse Suricata eve.json.
@@ -108,7 +108,7 @@ In /usr/share/filebeat to build Kibana dashboards
 
 
 
-Part 3: Elasticsearch Suricata Integration
+**Part 3: Elasticsearch Suricata Integration**
 ___________________________________________________________
 
 Log into Kibana: https://serverIP:5601
@@ -124,7 +124,7 @@ Add Suricata integration to Existing Fleet server
 
 
 
-Part 4: Transferring Pcaps & Running Suricata
+**Part 4: Transferring Pcaps & Running Suricata**
 __________________________________________________________
 
 I have created a script that pulls the pcap from the honeypot using scp > appends ".pcap" to daemonlogger files > Runs suricata in offline mode against pcaps > then moves the eve.json file to /var/log/suricata for filebeat to process
