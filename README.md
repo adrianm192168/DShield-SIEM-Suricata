@@ -60,7 +60,7 @@ under outputs: fast, stats, file
 
 
 
-**Part 2: Filebeat **
+**Part 2: Filebeat**
 ________________________________________________________________
 
 Filebeat will be our method of getting the Suricata output to visualize in Kibana. We will be using the Suricata module for filebeat to parse Suricata eve.json.
@@ -99,12 +99,13 @@ Modify /modules.d/suricata.yml
 	    enabled: true
 	    var.paths: ["/usr/share/filebeat/suricata/eve.json"]
 
-<<<Test this to see if needed>>>
+
 
 In /usr/share/filebeat to build Kibana dashboards
-./filebeat setup -e
 
-<<<End Test>>>
+	./filebeat setup -e
+
+
 
 
 
