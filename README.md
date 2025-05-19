@@ -54,8 +54,8 @@ Since we will be running Suricata in pcap mode for the sole purpose of ELK visua
 
 	sudo vi /etc/suricata/suricata.yaml
 
-under outputs: fast, stats, file
-	> enabled: no
+under outputs: fast, stats, file \
+	enabled: no
 
 
 
