@@ -65,8 +65,8 @@ under outputs: fast, stats, file
 Filebeat will be our method of getting the Suricata output to visualize in Kibana. We will be using the Suricata module for filebeat to parse Suricata eve.json.
 
 
-[Modify docker-compose.yml]
-<Under volumes>
+Modify docker-compose.yml \
+Under volumes, add: 
 
 	# Used to access suricata logs on host
 	- /var/log/suricata:/usr/share/filebeat/suricata
