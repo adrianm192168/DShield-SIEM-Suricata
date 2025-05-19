@@ -41,7 +41,7 @@ Set daily cron job to run suricata-update to fetch any rule updates
 	sudo vi /etc/cron.d/suricata-update
 	
  	# Fetches any updates to Suricata ET Open ruleset at 00:30 UTC daily
-	30 0 * * * root /usr/bin/suricata-update > /dev/null
+	30 0 * * * root /usr/bin/suricata-update > /tmp/suricata-update.txt
 
 Since we only want to run suricata in pcap mode, we will disable it so it is not running as an IDS on the network
 
