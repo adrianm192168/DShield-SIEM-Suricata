@@ -19,9 +19,6 @@ https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
 https://www.talosintelligence.com/daemon
 
 
-
-
-
 ## **Part 1: Install Suricata on SIEM Server**
 
 Suricata Install (Ubuntu / Debian) \
@@ -59,7 +56,11 @@ Since we will be running Suricata in pcap mode for the sole purpose of ELK visua
 	sudo vi /etc/suricata/suricata.yaml
 
 under outputs: fast, stats, file \
-	enabled: no
+	enabled: no 
+ 
+![image](https://github.com/user-attachments/assets/9b8b8186-ad2c-4cfe-8beb-c61735969d78)
+![image](https://github.com/user-attachments/assets/c690b950-cb81-4f79-8aae-33fc0f878098)
+![image](https://github.com/user-attachments/assets/afaa049d-7549-4be4-9510-872dc472d673)
 
 Write and quit
 
@@ -74,6 +75,9 @@ Under filebeat configurations > Under volumes add:
 
 	# Used to access suricata logs from the host machine 
 	- /var/log/suricata:/usr/share/filebeat/suricata
+![image](https://github.com/user-attachments/assets/8d02b695-7532-47d8-95e0-f50f8acb1a62)
+
+
 Write and quit
 
 Then, 
@@ -109,24 +113,7 @@ In /usr/share/filebeat to build Kibana dashboards
 	./filebeat setup -e
 
 
-
-
-
-## **Part 3: Elasticsearch Suricata Integration**
-
-Log into Kibana: https://serverIP:5601
-
-Navigate to Management > Integrations
-
-Search for Suricata integration 
-
-Add Suricata integration to an existing Fleet Server Agent Policy\
-	Save and continue \
-	Under Management > Integrations > Suricata > Configs \
-	Copy/paste the YML into your elastic-agent.yml file or into a file within your inputs.d directory
-
-
-## **Part 4: Transferring Pcaps & Running Suricata**
+## **Part 3: Transferring Pcaps & Running Suricata**
 
 I have created a script that pulls the pcap from the honeypot using scp > appends ".pcap" to daemonlogger files > Runs suricata in offline mode against pcaps > then moves the eve.json file to /var/log/suricata for filebeat to process
 
@@ -135,13 +122,17 @@ pull_pcap.sh: \
 	> sshkey private key path \
 	> cloud/local honeypot hostname, IP, and path to pcap files \
 	> directory to pcap files on local host \
-	> path to bpf on local host (So Suricata will not bloat logs with your sensor IP responses) \
+	> path to .bpf file on local host (So Suricata will not bloat logs with your honeypot IP responses) \
 	> path to suricata log directory "/var/log/suricata" by default \
 
 	git clone https://github.com/adrianm192168/DShield-SIEM-Suricata
 
 Edit the variables in the pull_pcap.sh script to match your environment
 
+You can create a bpf filter file so Suricata won't create alerts against your sensor's IP \
+It would look something like 
+
+	not src host <honeypot ip>
 
 Create a cron job to run this daily 
 
@@ -155,4 +146,25 @@ Note: The DShield Honeypot will have a daily reboot time that depends on what ti
 	
  	cat /etc/cron.d/dshield
 	
+
+## **Part 4: Elasticsearch Suricata Logs Integration**
+
+Log into Kibana: https://serverIP:5601
+
+Navigate to Management > Integrations
+
+At the bottom left of the screen, show "Beats Only" \
+![image](https://github.com/user-attachments/assets/263a2bda-5d60-41d6-ac59-0453a68e1480)
+
+Then, \
+Search for Suricata logs integration (not to be confused with the Suricata integration) 
+![image](https://github.com/user-attachments/assets/d9f6bb67-5cd2-42d3-bbb9-064be11c2329)
+
+
+You shouldn't have to follow any of the steps on the page as we did them earlier in the guide, but this is a way of testing whether or not the Suricata module is pushing data.
+
+![image](https://github.com/user-attachments/assets/a046d0f8-eeac-4354-9823-b5d5ff0179ef)
+
+
 After the script has finish running, the Suricata dashboard in Kibana should populate with the previous day's alerts and events.
+
