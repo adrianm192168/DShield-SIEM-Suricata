@@ -4,8 +4,8 @@
 
 # CHANGE ME
 sshkey=<path to sshkey>  #"/home/dshield/.ssh/sensor.pem"
-cloud_pcap=<path to pcaps on honeypot>  #"ubuntu@192.168.255.255:/srv/NSM/dailylogs/$(date -d "yesterday" '+%Y-%m-%d')/*"
-cloud_port=<honeypot ssh port>  #"2222"
+sensor_pcap=<path to pcaps on honeypot>  #"ubuntu@192.168.255.255:/srv/NSM/dailylogs/$(date -d "yesterday" '+%Y-%m-%d')/*"
+sensor_port=<honeypot ssh port>  #"2222"
 pcap_dir=<path to pcaps on local server>  #"/var/log/pcaps/$(date -d "yesterday" '+%Y-%m-%d')"
 bpf_filter=<path to suricata bpf>  #"/var/lib/suricata/capture-filter.bpf"
 suricata_log=<path to suricata log directory>  #"/var/log/suricata"
@@ -15,7 +15,7 @@ if [ -d "$pcap_dir" ]; then
         echo "Directory "$pcap_dir" was found"
 else
         echo "Pulling pcaps from sensor"
-        scp -P "$cloud_port" -i "$sshkey" "$cloud_pcap" $pcap_dir
+        scp -P "$sensor_port" -i "$sshkey" "$sensor_pcap" $pcap_dir
 fi
 
 # Check directory exists and warns if not
