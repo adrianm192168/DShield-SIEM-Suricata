@@ -5,32 +5,25 @@ This guide will demonstrate how to populate Suricata eve.json output into an ELK
 My intention is to put as little burden on the honeypot as possible to stay within the limits of the AWS Free tier. Suricata is unable to run with those limited specs so I will be using the SIEM server to perform the processing.
 
 
-DShield Honeypot Sensor (Ubuntu 22.04.5 LTS) (AWS Free Instance) \
-https://github.com/DShield-ISC/dshield \
-https://aws.amazon.com/free/free-tier-faqs/
+DShield Honeypot Sensor (Ubuntu 22.04.5 LTS) (AWS Free Instance) [1] [2]
 
-DShield-SIEM (Ubuntu 24.04.2 LTS) (Local Network) \
-https://github.com/bruneaug/DShield-SIEM
+DShield-SIEM (Ubuntu 24.04.2 LTS) (Local Network) [3]
 
 Collect Packet Captures on Sensor
 I will be using Cisco Talos Daemonlogger in this demonstration. \
-Any packet capture software will work. \
-https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
-https://www.talosintelligence.com/daemon
+Any packet capture software will work. [4] [5]
 
 
 ## **Part 1: Install Suricata on SIEM Server**
 
-Suricata Install (Ubuntu / Debian) \
-https://docs.suricata.io/en/latest/install.html (section 3.2.1)
+Suricata Install (Ubuntu / Debian) [6]
 
 	sudo apt-get install software-properties-common
 	sudo add-apt-repository ppa:oisf/suricata-stable
 	sudo apt-get update
 	sudo apt-get install suricata (latest stable)
 
-Fetch the default ruleset (ET Open ruleset) \
-https://rules.emergingthreats.net/OPEN_download_instructions.html
+Fetch the default ruleset (ET Open ruleset) [7] 
 
 	sudo suricata-update 
 By default, rules are stored at "/var/lib/suricata/rules"
@@ -167,4 +160,16 @@ You shouldn't have to follow any of the steps on the page as we did them earlier
 
 
 After the script has finish running, the Suricata dashboard in Kibana should populate with the previous day's alerts and events.
+
+
+
+## **References**
+
+[1] https://github.com/DShield-ISC/dshield \
+[2] https://aws.amazon.com/free/free-tier-faqs/ \
+[3] https://github.com/bruneaug/DShield-SIEM \
+[4] https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
+[5] https://www.talosintelligence.com/daemon \
+[6] https://docs.suricata.io/en/latest/install.html \
+[7] https://rules.emergingthreats.net/OPEN_download_instructions.html \
 
