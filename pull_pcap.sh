@@ -4,7 +4,7 @@
 
 # CHANGE ME
 sshkey=<path to sshkey>  #"/home/dshield/.ssh/sensor.pem"
-cloud_pcap=<path to pcaps on honeypot>  #"ubuntu@35.175.174.46:/srv/NSM/dailylogs/$(date -d "yesterday" '+%Y-%m-%d')/*"
+cloud_pcap=<path to pcaps on honeypot>  #"ubuntu@192.168.255.255:/srv/NSM/dailylogs/$(date -d "yesterday" '+%Y-%m-%d')/*"
 cloud_port=<honeypot ssh port>  #"2222"
 pcap_dir=<path to pcaps on local server>  #"/var/log/pcaps/$(date -d "yesterday" '+%Y-%m-%d')"
 bpf_filter=<path to suricata bpf>  #"/var/lib/suricata/capture-filter.bpf"
