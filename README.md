@@ -44,6 +44,8 @@ Set daily cron job to run suricata-update to fetch any rule updates
 	
  	# Fetches any updates to Suricata ET Open ruleset at 00:30 UTC daily
 	30 0 * * * root /usr/bin/suricata-update > /tmp/suricata-update.txt
+Write and quit
+
 
 Since we only want to run suricata in pcap mode, we will disable it so it is not running as an IDS on the network
 
@@ -59,7 +61,7 @@ Since we will be running Suricata in pcap mode for the sole purpose of ELK visua
 under outputs: fast, stats, file \
 	enabled: no
 
-
+Write and quit
 
 
 ## **Part 2: Filebeat**
@@ -68,11 +70,11 @@ Filebeat will be our method of getting the Suricata output to visualize in Kiban
 
 
 Modify docker-compose.yml \
-Under volumes, add: 
+Under filebeat configurations > Under volumes add: 
 
 	# Used to access suricata logs from the host machine 
 	- /var/log/suricata:/usr/share/filebeat/suricata
-
+Write and quit
 
 Then, 
 
@@ -80,7 +82,7 @@ Then,
 	sudo docker compose up -d
 
 
-Enter filebeat container
+Enter filebeat container and enable filebeat suricata module
 
 	sudo docker exec -ti filebeat bash
 
@@ -90,7 +92,7 @@ Enter filebeat container
 
 Modify /modules.d/suricata.yml
 
-*note If your container does not have a text editor, you can install one using "sudo docker exec -ti filebeat apt-get nano"
+*note If your container does not have a text editor, you can install one using "sudo docker exec -ti filebeat apt-get install nano"
 
 	nano /usr/share/filebeat/modules.d/suricata.yml
 
@@ -99,7 +101,7 @@ Modify /modules.d/suricata.yml
 	  eve:
 	    enabled: true
 	    var.paths: ["/usr/share/filebeat/suricata/eve.json"]
-
+Write and quit
 
 
 In /usr/share/filebeat to build Kibana dashboards
@@ -118,11 +120,10 @@ Navigate to Management > Integrations
 
 Search for Suricata integration 
 
-Add Suricata integration to Existing Fleet server
-	Default settings
-	Under Management > Integrations > Suricata
+Add Suricata integration to an existing Fleet Server Agent Policy\
+	Save and continue \
+	Under Management > Integrations > Suricata > Configs \
 	Copy/paste the YML into your elastic-agent.yml file or into a file within your inputs.d directory
-
 
 
 ## **Part 4: Transferring Pcaps & Running Suricata**
