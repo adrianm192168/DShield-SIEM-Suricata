@@ -1,7 +1,9 @@
 # DShield-SIEM-Suricata
 Suricata eve.json visualization in DShield ELK SIEM
 
+This guide will demonstrate how to populate Suricata eve.json output into an ELK stack using yesterday's completed pcap files. 
 My intention is to put as little burden on the honeypot as possible to stay within the limits of the AWS Free tier. Suricata is unable to run with those limited specs so I will be using the SIEM server to perform the processing.
+
 
 DShield Honeypot Sensor (Ubuntu 22.04.5 LTS) (AWS Free Instance) \
 https://github.com/DShield-ISC/dshield \
@@ -127,17 +129,19 @@ Add Suricata integration to Existing Fleet server
 
 I have created a script that pulls the pcap from the honeypot using scp > appends ".pcap" to daemonlogger files > Runs suricata in offline mode against pcaps > then moves the eve.json file to /var/log/suricata for filebeat to process
 
-pull_pcap.sh:
-	Customizable fields to match your setup directories:
-	> sshkey private key path
-	> cloud/local hostname, IP, and path to pcap files
-	> directory to pcap files on local host
-	> path to bpf on local host (So Suricata will not bloat logs with your sensor IP responses)
-	> path to suricata log directory "/var/log/suricata" by default
+pull_pcap.sh: \
+	Customizable fields to match your setup directories: \
+	> sshkey private key path \
+	> cloud/local honeypot hostname, IP, and path to pcap files \
+	> directory to pcap files on local host \
+	> path to bpf on local host (So Suricata will not bloat logs with your sensor IP responses) \
+	> path to suricata log directory "/var/log/suricata" by default \
 
 Create a cron job to run this daily 
 
 	sudo vi /etc/cron.d/pull_pcap
+
+ 	# Runs pull_pcap.sh at 0000 UTC daily and writes output to /tmp/pull_pcap_output.txt
 	0 0 * * * root /usr/bin/bash <path to pull_pcap.sh> > /tmp/pull_pcap_output.txt
 
 Note: The DShield Honeypot will have a daily reboot time that depends on what time it was initially launched. This can cause complications if you're trying to pull pcaps and it reboots. Plan accordingly.
