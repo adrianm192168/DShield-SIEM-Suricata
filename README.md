@@ -90,7 +90,7 @@ Modify /modules.d/suricata.yml
 
 *note If your container does not have a text editor, you can install one using "sudo docker exec -ti filebeat apt-get nano"
 
-	nano /modules.d/suricata.yml
+	nano /usr/share/filebeat/modules.d/suricata.yml
 
 	- module: suricata
 	  # All logs
@@ -119,7 +119,7 @@ Search for Suricata integration
 Add Suricata integration to Existing Fleet server
 	Default settings
 	Under Management > Integrations > Suricata
-	 Copy/paste the YML into your elastic-agent.yml file or into a file within your inputs.d directory
+	Copy/paste the YML into your elastic-agent.yml file or into a file within your inputs.d directory
 
 
 
