@@ -138,6 +138,11 @@ pull_pcap.sh: \
 	> path to bpf on local host (So Suricata will not bloat logs with your sensor IP responses) \
 	> path to suricata log directory "/var/log/suricata" by default \
 
+	git clone https://github.com/adrianm192168/DShield-SIEM-Suricata
+
+Edit the variables in the pull_pcap.sh script to match your environment
+
+
 Create a cron job to run this daily 
 
 	sudo vi /etc/cron.d/pull_pcap
