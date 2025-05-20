@@ -68,7 +68,7 @@ Filebeat will be our method of getting the Suricata output to visualize in Kiban
 Modify docker-compose.yml \
 Under volumes, add: 
 
-	# Used to access suricata logs on host
+	# Used to access suricata logs from the host machine 
 	- /var/log/suricata:/usr/share/filebeat/suricata
 
 
