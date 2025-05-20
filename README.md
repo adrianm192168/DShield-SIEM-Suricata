@@ -1,29 +1,29 @@
 # DShield-SIEM-Suricata
 Suricata eve.json visualization in DShield ELK SIEM
 
-This guide will demonstrate how to populate Suricata eve.json output into an ELK stack using yesterday's completed pcap files. 
+This guide will demonstrate how to populate Suricata eve.json output into an ELK stack with the Suricata Logs integration [1] using yesterday's completed pcap files. 
 My intention is to put as little burden on the honeypot as possible to stay within the limits of the AWS Free tier. Suricata is unable to run with those limited specs so I will be using the SIEM server to perform the processing.
 
 
-DShield Honeypot Sensor (Ubuntu 22.04.5 LTS) (AWS Free Instance) [1] [2]
+DShield Honeypot Sensor (Ubuntu 22.04.5 LTS) (AWS Free Instance) [2] [3]
 
-DShield-SIEM (Ubuntu 24.04.2 LTS) (Local Network) [3]
+DShield-SIEM (Ubuntu 24.04.2 LTS) (Local Network) [4]
 
 Collect Packet Captures on Sensor
 I will be using Cisco Talos Daemonlogger in this demonstration. \
-Any packet capture software will work. [4] [5]
+Any packet capture software will work. [5] [6]
 
 
 ## **Part 1: Install Suricata on SIEM Server**
 
-Suricata Install (Ubuntu / Debian) [6]
+Suricata Install (Ubuntu / Debian) [7]
 
 	sudo apt-get install software-properties-common
 	sudo add-apt-repository ppa:oisf/suricata-stable
 	sudo apt-get update
 	sudo apt-get install suricata (latest stable)
 
-Fetch the default ruleset (ET Open ruleset) [7] 
+Fetch the default ruleset (ET Open ruleset) [8] 
 
 	sudo suricata-update 
 By default, rules are stored at "/var/lib/suricata/rules"
@@ -165,11 +165,12 @@ After the script has finish running, the Suricata dashboard in Kibana should pop
 
 ## **References**
 
-[1] https://github.com/DShield-ISC/dshield \
-[2] https://aws.amazon.com/free/free-tier-faqs/ \
-[3] https://github.com/bruneaug/DShield-SIEM \
-[4] https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
-[5] https://www.talosintelligence.com/daemon \
-[6] https://docs.suricata.io/en/latest/install.html \
-[7] https://rules.emergingthreats.net/OPEN_download_instructions.html \
+[1] https://www.elastic.co/docs/reference/beats/filebeat/filebeat-module-suricata
+[2] https://github.com/DShield-ISC/dshield \
+[3] https://aws.amazon.com/free/free-tier-faqs/ \
+[4] https://github.com/bruneaug/DShield-SIEM \
+[5] https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
+[6] https://www.talosintelligence.com/daemon \
+[7] https://docs.suricata.io/en/latest/install.html \
+[8] https://rules.emergingthreats.net/OPEN_download_instructions.html \
 
