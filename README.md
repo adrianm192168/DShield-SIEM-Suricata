@@ -13,17 +13,22 @@ Collect Packet Captures on Sensor
 I will be using Cisco Talos Daemonlogger in this demonstration. \
 Any packet capture software will work. [5] [6]
 
+Suricata for processing pcaps to find signatures. [7]
+
+Filebeat Suricata Module to process eve.json files and visualize in Kibana. [8]
+
+
 
 ## **Part 1: Install Suricata on SIEM Server**
 
-Suricata Install (Ubuntu / Debian) [7]
+Suricata Install (Ubuntu / Debian) [9]
 
 	sudo apt-get install software-properties-common
 	sudo add-apt-repository ppa:oisf/suricata-stable
 	sudo apt-get update
 	sudo apt-get install suricata (latest stable)
 
-Fetch the default ruleset (ET Open ruleset) [8] 
+Fetch the default ruleset (ET Open ruleset) [10] 
 
 	sudo suricata-update 
 By default, rules are stored at "/var/lib/suricata/rules"
@@ -63,7 +68,7 @@ Write and quit
 Filebeat will be our method of getting the Suricata output to visualize in Kibana. We will be using the Suricata module for filebeat to parse Suricata eve.json.
 
 
-Modify docker-compose.yml \
+Modify docker-compose.yml so filebeat container has access to suricata folder on host \
 Under filebeat configurations > Under volumes add: 
 
 	# Used to access suricata logs from the host machine 
@@ -73,11 +78,14 @@ Under filebeat configurations > Under volumes add:
 
 Write and quit
 
-Then, 
+Then compose down and compose up to rebuild the filebeat container with the new configuration.
 
 	sudo docker compose down 
 	sudo docker compose up -d
 
+For the following step, you will need a text editor on the filebeat docker container. Use this command to install nano in the filebeat container:
+
+	sudo docker exec -ti filebeat apt-get install nano
 
 Enter filebeat container and enable filebeat suricata module
 
@@ -85,11 +93,7 @@ Enter filebeat container and enable filebeat suricata module
 
 	filebeat modules enable suricata
 
-
-
 Modify /modules.d/suricata.yml
-
-*note If your container does not have a text editor, you can install one using "sudo docker exec -ti filebeat apt-get install nano"
 
 	nano /usr/share/filebeat/modules.d/suricata.yml
 
@@ -99,12 +103,6 @@ Modify /modules.d/suricata.yml
 	    enabled: true
 	    var.paths: ["/usr/share/filebeat/suricata/eve.json"]
 Write and quit
-
-
-In /usr/share/filebeat to build Kibana dashboards
-
-	./filebeat setup -e
-
 
 ## **Part 3: Transferring Pcaps & Running Suricata**
 
@@ -173,6 +171,8 @@ After the script has finish running, the Suricata dashboard in Kibana should pop
 [4] https://github.com/bruneaug/DShield-SIEM \
 [5] https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
 [6] https://www.talosintelligence.com/daemon \
-[7] https://docs.suricata.io/en/latest/install.html \
-[8] https://rules.emergingthreats.net/OPEN_download_instructions.html 
+[7] https://suricata.io/
+[8] https://www.elastic.co/docs/reference/beats/filebeat/filebeat-module-suricata
+[9] https://docs.suricata.io/en/latest/install.html \
+[10] https://rules.emergingthreats.net/OPEN_download_instructions.html 
 
