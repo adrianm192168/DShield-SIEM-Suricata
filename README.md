@@ -162,6 +162,7 @@ After the script has finish running, the Suricata dashboard in Kibana should pop
 ![image](https://github.com/user-attachments/assets/4d9ccc0b-794b-451f-affa-69fbcdd96bf7)
 ![image](https://github.com/user-attachments/assets/7a1294c2-b8ba-4ace-a4a1-5d923320cc7f)
 
+One of the benefits of using a SIEM is being able to create custom visualizations to view activities of interest.
 
 ![image](https://github.com/user-attachments/assets/0b528949-0c1d-47f5-abaf-b479a8f00138)
 
