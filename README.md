@@ -172,7 +172,7 @@ After the script has finish running, the Suricata dashboard in Kibana should pop
 [5] https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
 [6] https://www.talosintelligence.com/daemon \
 [7] https://suricata.io/
-[8] https://www.elastic.co/docs/reference/beats/filebeat/filebeat-module-suricata
+[8] https://www.elastic.co/docs/reference/beats/filebeat/filebeat-module-suricata \
 [9] https://docs.suricata.io/en/latest/install.html \
 [10] https://rules.emergingthreats.net/OPEN_download_instructions.html 
 
