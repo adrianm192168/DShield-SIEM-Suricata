@@ -47,6 +47,7 @@ Since we only want to run suricata in pcap mode, we will disable it so it is not
 	sudo systemctl disable suricata.service
 
 
+**((OPTIONAL))** \
 There are a few configuration changes we need to make in the suricata.yaml
 
 Since we will be running Suricata in pcap mode for the sole purpose of ELK visualization, we will disable any logs other than eve.json
@@ -125,7 +126,7 @@ It would look something like
 
 	not src host <honeypot ip>
 
-Create a cron job to run this daily 
+Create a cron job to run this daily (alter to point to path to pull_pcap.sh)
 
 	sudo vi /etc/cron.d/pull_pcap
 
