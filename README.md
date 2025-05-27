@@ -1,34 +1,34 @@
 # DShield-SIEM-Suricata
 Suricata eve.json visualization in DShield ELK SIEM
 
-This guide will demonstrate how to populate Suricata eve.json output into an ELK stack with the Suricata Logs integration [1] using yesterday's completed pcap files. 
+This guide will demonstrate how to populate Suricata eve.json output into an ELK stack with the Suricata Logs integration using yesterday's completed pcap files. 
 My intention is to put as little burden on the honeypot as possible to stay within the limits of the AWS Free tier. Suricata is unable to run with those limited specs so I will be using the SIEM server to perform the processing.
 
 
-DShield Honeypot Sensor (Ubuntu 22.04.5 LTS) (AWS Free Instance) [2] [3]
+DShield Honeypot Sensor (Ubuntu 22.04.5 LTS) (AWS Free Instance) [1] [2]
 
-DShield-SIEM (Ubuntu 24.04.2 LTS) (Local Network) [4]
+DShield-SIEM (Ubuntu 24.04.2 LTS) (Local Network) [3]
 
 Collect Packet Captures on Sensor
 I will be using Cisco Talos Daemonlogger in this demonstration. \
-Any packet capture software will work. [5] [6]
+Any packet capture software will work. [4] [5]
 
-Suricata for processing pcaps to find signatures. [7]
+Suricata for processing pcaps to find signatures. [6]
 
-Filebeat Suricata Module to process eve.json files and visualize in Kibana. [8]
+Filebeat Suricata Module to process eve.json files and visualize in Kibana. [7]
 
 
 
 ## **Part 1: Install Suricata on SIEM Server**
 
-Suricata Install (Ubuntu / Debian) [9]
+Suricata Install (Ubuntu / Debian) [8]
 
 	sudo apt-get install software-properties-common
 	sudo add-apt-repository ppa:oisf/suricata-stable
 	sudo apt-get update
 	sudo apt-get install suricata (latest stable)
 
-Fetch the default ruleset (ET Open ruleset) [10] 
+Fetch the default ruleset (ET Open ruleset) [9] 
 
 	sudo suricata-update 
 By default, rules are stored at "/var/lib/suricata/rules"
@@ -39,7 +39,6 @@ Set daily cron job to run suricata-update to fetch any rule updates
 	
  	# Fetches any updates to Suricata ET Open ruleset at 00:30 UTC daily
 	30 0 * * * root /usr/bin/suricata-update > /tmp/suricata-update.txt
-Write and quit
 
 
 Since we only want to run suricata in pcap mode, we will disable it so it is not running as an IDS on the network
@@ -47,10 +46,9 @@ Since we only want to run suricata in pcap mode, we will disable it so it is not
 	sudo systemctl disable suricata.service
 
 
-**((OPTIONAL))** \
-There are a few configuration changes we need to make in the suricata.yaml
+**((OPTIONAL))**
 
-Since we will be running Suricata in pcap mode for the sole purpose of ELK visualization, we will disable any logs other than eve.json
+Disable any additional logs Suricata outputs other than eve.json
 
 	sudo vi /etc/suricata/suricata.yaml
 
@@ -60,8 +58,6 @@ under outputs: fast, stats, file \
 ![image](https://github.com/user-attachments/assets/9b8b8186-ad2c-4cfe-8beb-c61735969d78)
 ![image](https://github.com/user-attachments/assets/c690b950-cb81-4f79-8aae-33fc0f878098)
 ![image](https://github.com/user-attachments/assets/afaa049d-7549-4be4-9510-872dc472d673)
-
-Write and quit
 
 
 ## **Part 2: Filebeat**
@@ -76,8 +72,6 @@ Under filebeat configurations > Under volumes add:
 	- /var/log/suricata:/usr/share/filebeat/suricata
 ![image](https://github.com/user-attachments/assets/8d02b695-7532-47d8-95e0-f50f8acb1a62)
 
-
-Write and quit
 
 Then compose down and compose up to rebuild the filebeat container with the new configuration.
 
@@ -94,7 +88,7 @@ Enter filebeat container and enable filebeat suricata module
 
 	filebeat modules enable suricata
 
-Modify /modules.d/suricata.yml
+Modify /modules.d/suricata.yml so the filebeat suricata module can find the eve.json file for processing
 
 	nano /usr/share/filebeat/modules.d/suricata.yml
 
@@ -103,28 +97,26 @@ Modify /modules.d/suricata.yml
 	  eve:
 	    enabled: true
 	    var.paths: ["/usr/share/filebeat/suricata/eve.json"]
-Write and quit
 
 ## **Part 3: Transferring Pcaps & Running Suricata**
 
 I have created a script that pulls the pcap from the honeypot using scp > appends ".pcap" to daemonlogger files > Runs suricata in offline mode against pcaps > then moves the eve.json file to /var/log/suricata for filebeat to process
 
 pull_pcap.sh: \
-	Customizable fields to match your setup directories: \
-	> sshkey private key path \
-	> cloud/local honeypot hostname, IP, and path to pcap files \
-	> directory to pcap files on local host \
-	> path to .bpf file on local host (So Suricata will not bloat logs with your honeypot IP responses) \
-	> path to suricata log directory "/var/log/suricata" by default \
+	Customizable fields to match your environment: \
+	> SSHkey private key path \
+	> Cloud/local honeypot hostname, IP, and path to pcap files \
+	> Directory to pcap files on local host \
+	> Path to .bpf file on local host (So Suricata will not bloat logs with your honeypot IP responses) \
+	> Path to suricata log directory "/var/log/suricata" by default \
 
 	git clone https://github.com/adrianm192168/DShield-SIEM-Suricata
 
 Edit the variables in the pull_pcap.sh script to match your environment
 
 You can create a bpf filter file so Suricata won't create alerts against your sensor's IP \
-It would look something like 
 
-	not src host <honeypot ip>
+	echo "not src host <honeypot ip>" > capture-filter.bpf
 
 Create a cron job to run this daily (alter to point to path to pull_pcap.sh)
 
@@ -169,14 +161,13 @@ One of the benefits of using a SIEM is being able to create custom visualization
 
 ## **References**
 
-[1] https://www.elastic.co/docs/reference/beats/filebeat/filebeat-module-suricata \
-[2] https://github.com/DShield-ISC/dshield \
-[3] https://aws.amazon.com/free/free-tier-faqs/ \
-[4] https://github.com/bruneaug/DShield-SIEM \
-[5] https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
-[6] https://www.talosintelligence.com/daemon \
-[7] https://suricata.io/ \
-[8] https://www.elastic.co/docs/reference/beats/filebeat/filebeat-module-suricata \
-[9] https://docs.suricata.io/en/latest/install.html \
-[10] https://rules.emergingthreats.net/OPEN_download_instructions.html 
+[1] https://github.com/DShield-ISC/dshield \
+[2] https://aws.amazon.com/free/free-tier-faqs/ \
+[3] https://github.com/bruneaug/DShield-SIEM \
+[4] https://github.com/bruneaug/DShield-SIEM/blob/main/AddOn/packet_capture.md \
+[5] https://www.talosintelligence.com/daemon \
+[6] https://suricata.io/ \
+[7] https://www.elastic.co/docs/reference/beats/filebeat/filebeat-module-suricata \
+[8] https://docs.suricata.io/en/latest/install.html \
+[9] https://rules.emergingthreats.net/OPEN_download_instructions.html 
 
